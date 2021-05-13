@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	
+	"math/rand"
+	"strconv"
 	"github.com/gorilla/mux"
 )
 //book struct
@@ -45,15 +46,28 @@ func getBook(w http.ResponseWriter, r* http.Request){
 func createBook(w http.ResponseWriter, r* http.Request){
 	w.Header().Set("Content-Type","application/json")
 	var book Book
-	_=  json
+	_=  json.NewDecoder(r.Body).Decode(&book)
+	book.ID = strconv.Itoa(rand.Intn(1000000))
+	books =append(books,book)
+	json.NewEncoder(w).Encode(book)
 
 }
 //update book
 func updateBook(w http.ResponseWriter, r* http.Request){
+	w.Header().Set("Content-Type","application/json")
 
 }
 //delete book
 func deleteBook(w http.ResponseWriter, r* http.Request){
+
+	w.Header().Set("Content-Type","application/json")
+	params:=mux.Vars(r)
+	for index,item := range books {
+		if item.ID==params["id"]{
+			books = append(books[:index],books[index+1:]...)
+		}
+	}
+	json.NewEncoder(w).Encode(books)
 
 }
 
